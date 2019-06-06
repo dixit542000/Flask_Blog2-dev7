@@ -21,12 +21,11 @@
                     {% endif %}
                 {{ post.likes.count() }} likes
                 <p>
-                 {% if post.comments[0] != NULL %}
-                    {% for comment in post.comments %}
-                        {{ comment }}<a href="{{ url_for('posts.reply_comment', post_id=post.id, comment_id=comment.id) }}">Reply</a>
-                        <br>
-                    {% endfor %}
-                 {% endif %}
+                <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('posts.comment_post', post_id = post.id) }}">Comment</a><br>
+                {% for comment in comments %}
+                    {{ comment[6] }} : &nbsp {{ comment[1] }} &nbsp <a href="{{ url_for('posts.reply_comment', post_id=post.id, comment_id=comment.id) }}">Reply</a>
+                    <br>
+                {% endfor %}
                 </p>
                 </div>
             </article>

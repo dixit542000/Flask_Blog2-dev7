@@ -64,8 +64,16 @@ def comment_post(post_id):
     form = AddCommentForm()
     if request.method == 'POST':
         if form.validate_on_submit():
-            comment = Comment(body=form.body.data, post_id=post.id)
+            comment = Comment(body=form.body.data, post_id=post.id, path=0)
             db.session.add(comment)
+            db.session.commit()
+            str2 = "select id from Comment order by id desc limit 1"
+            result2 = (db.session.execute(str2).fetchall())
+            for r in result2:
+                pid = r[0]
+            print(pid)
+            str3 = "update comment set path = {} where id = {}".format(pid, pid)
+            db.session.execute(str3)
             db.session.commit()
             flash("Your comment has been added to the post", "success")
             return redirect(url_for("main.home"))
@@ -76,16 +84,19 @@ def comment_post(post_id):
 @login_required
 def reply_comment(post_id,comment_id):
     post = Post.query.get_or_404(post_id)
-    comment = Comment.query.get(comment_id)
-    path = str(comment_id)+'.'
+   # comment = Comment.query.get(comment_id)
+    parent = Comment.query.get(comment_id)
+    path = str(comment_id)
+    db.session.commit()
     form = AddCommentForm()
     if request.method == 'POST':
-       # if form.validate_on_submit():
-            print(comment_id)
-            comment = Comment(body=form.body.data, post_id=post.id, parent_id=comment_id, depth=comment.depth+1, path=path)
-
+        if form.validate_on_submit():
+            comment = Comment(body=form.body.data, post_id=post.id, parent_id=comment_id, depth=parent.depth+1, path=path)
             db.session.add(comment)
-
+            db.session.commit()
+            child = Comment.query.get(comment.id)
+            print(child)
+            child.path = str(parent.path)+'.'+str(child.id)
             db.session.commit()
             flash("Your reply has been added to the post", "success")
             return redirect(url_for("main.home"))
