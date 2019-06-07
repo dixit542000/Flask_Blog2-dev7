@@ -12,7 +12,6 @@ def home():
     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     str = "select * from Comment order by path + 0 asc"
     comments = (db.session.execute(str).fetchall())
-    print(comments)
     return render_template('home.html', posts=posts, comments=comments, form=AddCommentForm())
 
 @main.route('/about')

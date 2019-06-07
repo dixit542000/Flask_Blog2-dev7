@@ -71,7 +71,6 @@ def comment_post(post_id):
             result2 = (db.session.execute(str2).fetchall())
             for r in result2:
                 pid = r[0]
-            print(pid)
             str3 = "update comment set path = {} where id = {}".format(pid, pid)
             db.session.execute(str3)
             db.session.commit()
